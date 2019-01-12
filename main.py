@@ -16,7 +16,10 @@ X = iris.data
 y = iris.target
 
 # split and randomize the data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+test_size = float(input("Enter percentage for test data: "))
+while test_size > 0.99 or test_size < 0.01:
+    test_size = float(input("Enter a value between 0.01 and 0.99: "))
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
 
 # first run it through a real classifier
 classifier = GaussianNB()
