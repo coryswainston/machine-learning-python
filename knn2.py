@@ -7,12 +7,13 @@ Using knn with more interesting data
 
 import numpy as np
 import pandas as pd
-from classifiers import KNearestNeighbors
-from knn import run_knn
+from pandas.api.types import CategoricalDtype
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 
 # a method to replace categorical data with numbers
-def replace_cat_data(data, col_name):
-    data[col_name] = data[col_name].astype('category')
+def replace_cat_data(data, col_name, order):
+    data[col_name] = data[col_name].astype(CategoricalDtype(categories=order, ordered=True))
     data[col_name] = data[col_name].cat.codes
 
 # import the car data
@@ -26,15 +27,37 @@ car_data = pd.read_csv('data/car.data.txt',
 category_fixes = {"doors": {"5more": 5},
                   "persons": {"more": 5}}
 car_data.replace(category_fixes, inplace=True)
-for i in ["buying", "maint", "lug_boot", "safety"]:
-    replace_cat_data(car_data, i)
+maint_order = ["low", "med", "high", "vhigh"]
+lug_boot_order = ["small", "med", "big"]
+for i in ["buying", "maint", "safety"]:
+    replace_cat_data(car_data, i, maint_order)
+replace_cat_data(car_data, "lug_boot", lug_boot_order)
 
 # convert to numpy arrays
-np_car_data = car_data.values
+np_car_data = car_data.values.astype(int)
 car_X, car_y = np.hsplit(np_car_data, [car_data.shape[1] - 1])
+car_y = np.ravel(car_y)
+
+print(car_y)
 
 # predict
-run_knn(car_X, car_y)
+test_size = .30
+X_train, X_test, y_train, y_test = train_test_split(car_X, car_y, test_size=test_size)
+k = int(input("Enter number of neighbors: "))
+while k < 1 or k > 20:
+    k = int(input("Enter a value between 1 and 20: "))
+c = KNeighborsClassifier(n_neighbors=k)
+c.fit(X_train, y_train)
+p = c.predict(X_test)
+print(p)
+print("Y test")
+print(y_test)
+car_results = p == y_test
+#print("\nCar results:")
+#print(car_results)
+correct_set = len([i for i in car_results if i])
+accuracy = correct_set / len(car_results)
+print(accuracy)
 
 
 # import the mpg data
