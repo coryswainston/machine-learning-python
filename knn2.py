@@ -41,7 +41,7 @@ car_y = np.ravel(car_y)
 print(car_y)
 
 # predict
-test_size = .30
+test_size = .50
 X_train, X_test, y_train, y_test = train_test_split(car_X, car_y, test_size=test_size)
 k = int(input("Enter number of neighbors: "))
 while k < 1 or k > 20:
