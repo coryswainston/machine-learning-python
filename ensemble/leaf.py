@@ -63,7 +63,7 @@ print ("\n")
 
 ###################### BAGGING ################################
 print("Bagging:")
-bagging = BaggingClassifier(base_estimator=knn, max_samples=0.5, max_features=0.5)
+bagging = BaggingClassifier(base_estimator=knn, max_samples=.9, max_features=.9)
 #bagging = BaggingClassifier(base_estimator=gnb, max_samples=0.5, max_features=0.5)
 #bagging = BaggingClassifier(base_estimator=mlp, max_samples=0.5, max_features=0.5)
 bagging.fit(X_train, y_train)
@@ -72,7 +72,7 @@ print(accuracy_score(y_test, predictions))
 
 ###################### ADABOOST #############################
 print("AdaBoost:")
-ab = AdaBoostClassifier(n_estimators=100)
+ab = AdaBoostClassifier(n_estimators=100, learning_rate=0.1)
 ab.fit(X_train, y_train)
 predictions = ab.predict(X_test)
 print(accuracy_score(y_test, predictions))
